@@ -1,6 +1,6 @@
 <template>
   <div id="app">
-    <TopBar @create="create_shown=true" @close="close"/>
+    <TopBar @create="createCommand" @close="close"/>
     <div class="body">
       <div class="terminal">
         Aha niho twandika ama commande turungitse n'ayo turonse,<br>
@@ -25,28 +25,45 @@
         </div>
       </div>
     </div>
-    <DialogCommand :active="create_shown"/>
+    <dialog ref="dialog">
+      <h3>Ajouter une commande</h3>
+      <form method="dialog">
+        <div class="field">
+          <label>Label</label>
+          <input type="text" placeholder="Nom de la commande" />
+        </div>
+        <div class="field">
+          <label>Valeur</label>
+          <input type="number" placeholder="Valeur de la commande" />
+        </div>
+        <div class="buttons">
+          <button class="cancel">cancel</button>
+          <button @click.prevent>OK</button>
+        </div>
+      </form>
+    </dialog>
   </div>
 </template>
 
 <script>
 import TopBar from '@/components/topbar.vue'
 import Button from '@/components/button.vue'
-import DialogCommand from '@/components/dialog_command.vue'
 
 export default {
   name: 'HomeView',
   components: {
-    TopBar, Button, DialogCommand
+    TopBar, Button
   },
   data(){
     return {
-      create_shown:false
     }
   },
   methods:{
     close(){
-      this.create_shown = false
+      this.$refs.dialog.showModal()
+    },
+    createCommand(){
+      this.$refs.dialog.showModal()
     }
   }
 }

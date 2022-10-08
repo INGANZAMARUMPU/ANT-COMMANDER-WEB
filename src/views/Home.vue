@@ -23,22 +23,27 @@
             <Button label="↓" value="001"/>
           </div>
         </div>
+        <Button
+          v-for="command in commands"
+          :label="command.label"
+          :value="command.value"/>
       </div>
     </div>
     <dialog ref="dialog">
       <h3>Ajouter une commande</h3>
-      <form method="dialog">
+      <form method="dialog" ref="form">
         <div class="field">
           <label>Label</label>
-          <input type="text" placeholder="Nom de la commande" />
+          <input type="text" v-model="label" placeholder="Nom de la commande" />
         </div>
         <div class="field">
           <label>Valeur</label>
-          <input type="number" placeholder="Valeur de la commande" />
+          <input type="number" v-model="value" placeholder="Valeur de la commande" />
         </div>
+        <div class="logs">{{ logs }}</div>
         <div class="buttons">
           <button class="cancel">cancel</button>
-          <button @click.prevent>OK</button>
+          <button @click.prevent="pushCommand">OK</button>
         </div>
       </form>
     </dialog>
@@ -56,6 +61,10 @@ export default {
   },
   data(){
     return {
+      label:"",
+      value:"",
+      commands:[],
+      logs:""
     }
   },
   methods:{
@@ -64,6 +73,27 @@ export default {
     },
     createCommand(){
       this.$refs.dialog.showModal()
+    },
+    validated(){
+      for(let command of this.commands){
+        if(command.value == this.value || command.label == this.label){
+          return false
+        }
+      }
+      return true
+    },
+    pushCommand(){
+      if(this.validated()){
+        this.commands.push({
+          "label" : this.label,
+          "value" : this.value.toString().padStart(3, '0')
+        })
+        this.$refs.dialog.close()
+        this.label = ""
+        this.value = ""
+      } else {
+        this.logs = "iyo valeur yarafashwe"
+      }
     }
   }
 }

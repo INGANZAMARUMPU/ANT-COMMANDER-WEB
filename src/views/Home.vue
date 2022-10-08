@@ -1,9 +1,10 @@
 <template>
   <div id="app">
-    <TopBar/>
+    <TopBar @create="create_shown=true" @close="close"/>
     <div class="body">
       <div class="terminal">
-        Aha niho twandika ama commande turungitse n'ayo turonse
+        Aha niho twandika ama commande turungitse n'ayo turonse,<br>
+        hari n'igihe twohitamwo kuhashira camera mu ma version azokurikira
         <div class="content">
           >>>
         </div>
@@ -24,16 +25,29 @@
         </div>
       </div>
     </div>
+    <DialogCommand :active="create_shown"/>
   </div>
 </template>
 
 <script>
 import TopBar from '@/components/topbar.vue'
 import Button from '@/components/button.vue'
+import DialogCommand from '@/components/dialog_command.vue'
+
 export default {
   name: 'HomeView',
   components: {
-    TopBar, Button
+    TopBar, Button, DialogCommand
+  },
+  data(){
+    return {
+      create_shown:false
+    }
+  },
+  methods:{
+    close(){
+      this.create_shown = false
+    }
   }
 }
 </script>
@@ -46,7 +60,7 @@ export default {
   height: 100%;
   background-color: #111;
   flex-grow: 1;
-  color: green;
+  color: #0d0;
   padding: 10px;
   font-weight: 600;
 }

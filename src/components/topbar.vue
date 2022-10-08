@@ -2,7 +2,7 @@
   <div class="component">
     <h1>ANT ROBOT COMMANDER V1.0</h1>
     <div class="options">
-      <h1>+</h1>
+      <h1 @click="createCommand">+</h1>
       <h1>☼</h1>
     </div>
   </div>
@@ -10,7 +10,10 @@
 
 <script>
 export default {
-  components: {
+  methods:{
+    createCommand(){
+      this.$emit("create")
+    }
   }
 }
 </script>

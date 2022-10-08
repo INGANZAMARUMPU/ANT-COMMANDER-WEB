@@ -18,11 +18,11 @@ export default {
   },
   methods:{
     play(){
-      let char
+      let track
       for(var i = 0; i < this.value.length; i++){
-        char = this.value[i]
+        track = "/static/"+this.value[i]+".mp3"
         setTimeout(() => {
-          new Audio("/static/"+char+".mp3").play()
+          new Audio(track).play()
         }, i*200)
       }
     }

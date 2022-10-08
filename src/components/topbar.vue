@@ -1,6 +1,6 @@
 <template>
   <div class="component">
-    <h1>ANT ROBOT COMMANDER</h1>
+    <h1>ANT ROBOT COMMANDER V1.0</h1>
     <div class="options">
       <h1>+</h1>
       <h1>☼</h1>

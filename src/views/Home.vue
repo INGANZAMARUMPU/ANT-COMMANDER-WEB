@@ -11,30 +11,15 @@
       <div class="commander">
         <div class="control">
           <div class="line">
-            <div class="button">
-              <label>↑</label>
-              <div class="value">000</div>
-            </div>
+            <Button label="↑" value="000"/>
           </div>
           <div class="line">
-            <div class="button">
-              <label>←</label>
-              <div class="value">002</div>
-            </div>
-            <div class="button">
-              <label>■</label>
-              <div class="value">004</div>
-            </div>
-            <div class="button">
-              <label>→</label>
-              <div class="value">003</div>
-            </div>
+            <Button label="←" value="002"/>
+            <Button label="■" value="004"/>
+            <Button label="→" value="003"/>
           </div>
           <div class="line">
-            <div class="button">
-              <label>↓</label>
-              <div class="value">001</div>
-            </div>
+            <Button label="↓" value="001"/>
           </div>
         </div>
       </div>
@@ -44,10 +29,11 @@
 
 <script>
 import TopBar from '@/components/topbar.vue'
+import Button from '@/components/button.vue'
 export default {
   name: 'HomeView',
   components: {
-    TopBar
+    TopBar, Button
   }
 }
 </script>
@@ -69,29 +55,8 @@ export default {
   flex-grow: 1;
   min-width: 49%;
 }
-.button{
-  padding: 5px 20px;
-  margin: 5px;
-  background-color: var(--primary);
-  color: white;
-  box-shadow: 2px 2px 5px;
-  text-align: center;
-}
-.button:hover{
-  background-color: var(--primary-light);
-}
-.button:active{
-  background-color: var(--primary);
-}
-.button label{
-  font-weight: 800;
-  font-size: 2em;
-}
 .line{
   display: flex;
   justify-content: center;
-}
-.value{
-  font-size: 0.8em!important;
 }
 </style>

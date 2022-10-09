@@ -64,7 +64,8 @@ export default {
       label:"",
       value:"",
       commands:[],
-      logs:""
+      logs:"",
+      socket:null
     }
   },
   methods:{
@@ -95,6 +96,30 @@ export default {
         this.logs = "iyo valeur yarafashwe"
       }
     }
+  },
+  mounted(){
+    this.socket = new WebSocket("ws://127.0.0.1:8000/");
+    this.socket.onopen = function(e) {
+      console.log("[open] Connection established");
+      console.log("Sending to server");
+      this.socket.send("My name is John");
+    };
+
+    this.socket.onmessage = function(event) {
+      console.log(`[message] Data received from server: ${event.data}`);
+    };
+
+    this.socket.onclose = function(event) {
+      if (event.wasClean) {
+        console.log(`[close] Connection closed cleanly, code=${event.code} reason=${event.reason}`);
+      } else {
+        console.log('[close] Connection died');
+      }
+    };
+
+    this.socket.onerror = function(error) {
+      console.log(`[error] ${error.message}`);
+    };
   }
 }
 </script>

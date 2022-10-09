@@ -65,12 +65,15 @@ export default {
       value:"",
       commands:[],
       logs:"",
-      socket:null
+      socket:null,
+      id:null
     }
   },
   watch:{
     socket(new_val){
       this.$store.state.socket = new_val
+      this.id = Date.now()
+      this.$store.state.id = this.id
     }
   },
   methods:{
@@ -103,7 +106,8 @@ export default {
     }
   },
   mounted(){
-    this.socket = new WebSocket("ws://127.0.0.1:8000/robot/");
+    // this.socket = new WebSocket(`ws://${window.location.host}/robot/`);
+    this.socket = new WebSocket(`ws://127.0.0.1:8000/robot/`);
     this.socket.onopen = function(e) {
       console.log("[open] Connection established");
       console.log("Sending to server");
@@ -111,7 +115,12 @@ export default {
     this.socket.onmessage = function(event) {
       console.log(`[message] Data received from server: ${event.data}`);
       let track
-      let value = event.data
+      if(event.data.sender == this.id) {
+        console.log(`cannot play my own message`);
+        return
+      }
+      let value = event.data.message
+
       for(var i = 0; i < value.length; i++){
         track = "/static/"+value[i]+".mp3"
         setTimeout(() => {

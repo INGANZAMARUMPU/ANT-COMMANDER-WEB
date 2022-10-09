@@ -18,7 +18,10 @@ export default {
   },
   methods:{
     play(){
-      this.$store.state.socket.send(this.value)
+      this.$store.state.socket.send({
+        "sender" : this.$store.state.id,
+        "message" : this.value
+      })
     }
   }
 }

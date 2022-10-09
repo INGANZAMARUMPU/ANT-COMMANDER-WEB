@@ -2,7 +2,8 @@ import { createStore } from 'vuex'
 
 export default createStore({
   state: {
-    socket:null
+    socket:null,
+    id:null
   },
   getters: {
   },

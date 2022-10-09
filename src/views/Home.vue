@@ -107,22 +107,24 @@ export default {
   },
   mounted(){
     // this.socket = new WebSocket(`ws://${window.location.host}/robot/`);
+    let vue = this
     this.socket = new WebSocket(`ws://127.0.0.1:8000/robot/`);
     this.socket.onopen = function(e) {
       console.log("[open] Connection established");
       console.log("Sending to server");
     };
     this.socket.onmessage = function(event) {
+      let data = JSON.parse(event.data)
       console.log(`[message] Data received from server: ${event.data}`);
       let track
-      if(event.data.sender == this.id) {
+      if(data.sender == vue.id) {
         console.log(`cannot play my own message`);
         return
       }
-      let value = event.data.message
+      let sounds = data.message
 
-      for(var i = 0; i < value.length; i++){
-        track = "/static/"+value[i]+".mp3"
+      for(var i = 0; i < sounds.length; i++){
+        track = "/static/"+sounds[i]+".mp3"
         setTimeout(() => {
           new Audio(track).play()
         }, i*200)
@@ -134,6 +136,7 @@ export default {
         console.log(`[close] Connection closed cleanly, code=${event.code} reason=${event.reason}`);
       } else {
         console.log('[close] Connection died');
+        this.socket = new WebSocket(`ws://127.0.0.1:8000/robot/`);
       }
     };
 

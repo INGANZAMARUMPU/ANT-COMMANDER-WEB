@@ -18,10 +18,11 @@ export default {
   },
   methods:{
     play(){
-      this.$store.state.socket.send({
+      let data = {
         "sender" : this.$store.state.id,
         "message" : this.value
-      })
+      }
+      this.$store.state.socket.send(JSON.stringify(data))
     }
   }
 }

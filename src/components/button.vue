@@ -18,13 +18,7 @@ export default {
   },
   methods:{
     play(){
-      let track
-      for(var i = 0; i < this.value.length; i++){
-        track = "/static/"+this.value[i]+".mp3"
-        setTimeout(() => {
-          new Audio(track).play()
-        }, i*200)
-      }
+      this.$store.state.socket.send(this.value)
     }
   }
 }

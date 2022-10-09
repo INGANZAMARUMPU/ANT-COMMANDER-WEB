@@ -68,6 +68,11 @@ export default {
       socket:null
     }
   },
+  watch:{
+    socket(new_val){
+      this.$store.state.socket = new_val
+    }
+  },
   methods:{
     close(){
       this.$refs.dialog.showModal()
@@ -98,15 +103,21 @@ export default {
     }
   },
   mounted(){
-    this.socket = new WebSocket("ws://127.0.0.1:8000/");
+    this.socket = new WebSocket("ws://127.0.0.1:8000/robot/");
     this.socket.onopen = function(e) {
       console.log("[open] Connection established");
       console.log("Sending to server");
-      this.socket.send("My name is John");
     };
-
     this.socket.onmessage = function(event) {
       console.log(`[message] Data received from server: ${event.data}`);
+      let track
+      let value = event.data
+      for(var i = 0; i < value.length; i++){
+        track = "/static/"+value[i]+".mp3"
+        setTimeout(() => {
+          new Audio(track).play()
+        }, i*200)
+      }
     };
 
     this.socket.onclose = function(event) {

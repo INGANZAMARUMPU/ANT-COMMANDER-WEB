@@ -3,11 +3,11 @@
     <TopBar @create="createCommand" @close="close"/>
     <div class="body">
       <div class="camera">
-        Aha niho twandika ama commande turungitse n'ayo turonse,<br>
-        hari n'igihe twohitamwo kuhashira camera mu ma version azokurikira
-        <div class="content">
-          >>>
+        <div class="controls">
+          <button @click="startCamera">New</button>
+          <button>Join</button>
         </div>
+        <video ref="output" autoplay playsinline/>
       </div>
       <div class="commander">
         <div class="control">
@@ -103,6 +103,18 @@ export default {
       } else {
         this.logs = "iyo valeur yarafashwe"
       }
+    },
+    startCamera(){
+      console.log('Opening Camera')
+      let output = this.$refs.output
+      navigator.mediaDevices.getUserMedia({
+        'video': true,
+        'audio': false
+      }).then( stream => {
+        output.srcObject = stream
+      }).catch(error => {
+        console.error(error)
+      })
     }
   },
   mounted(){
@@ -151,12 +163,19 @@ export default {
   display: flex;
 }
 .camera{
+  position: relative;
   height: 100%;
   background-color: #111;
   flex-grow: 1;
   color: #0d0;
-  padding: 10px;
   font-weight: 600;
+}
+video{
+  position: relative;
+  width: 100%;
+  max-height: 100%;
+  top: 50%;
+  transform: translateY(-50%);
 }
 .commander{
   height: 100%;
@@ -167,7 +186,17 @@ export default {
   display: flex;
   justify-content: center;
 }
-
+.controls{
+  position: absolute;
+  z-index: 1;
+  width: 100%;
+  display: flex;
+  justify-content: right;
+  opacity: .7;
+}
+.controls button{
+  box-shadow: none;
+}
 @media screen and (max-width: 500px) {
   .body{
     display: block;

@@ -5,7 +5,7 @@
       <div class="camera">
         <div class="controls">
           <button @click="startCamera">New</button>
-          <button>Join</button>
+          <button @click="joinCamera">Join</button>
         </div>
         <video ref="output" autoplay playsinline/>
       </div>
@@ -66,7 +66,8 @@ export default {
       commands:[],
       logs:"",
       socket:null,
-      id:null
+      id:null,
+      stream:null
     }
   },
   watch:{
@@ -105,22 +106,30 @@ export default {
       }
     },
     startCamera(){
-      console.log('Opening Camera')
       let output = this.$refs.output
       navigator.mediaDevices.getUserMedia({
         'video': true,
         'audio': false
       }).then( stream => {
-        output.srcObject = stream
+        this.stream = stream
+        output.srcObject = this.stream
       }).catch(error => {
         console.error(error)
       })
+    },
+    joinCamera(){
+      let output = this.$refs.output
+      this.stream.getTracks().forEach(track => {
+        track.stop()
+      })
+      output.srcObject = null
+      output.pause()
     }
   },
   mounted(){
     let vue = this
-    this.socket = new WebSocket(`ws://${window.location.host}/robot/`);
-    // this.socket = new WebSocket(`ws://127.0.0.1:8000/robot/`);
+    // this.socket = new WebSocket(`ws://${window.location.host}/robot/`);
+    this.socket = new WebSocket(`ws://127.0.0.1:8000/robot/`);
     this.socket.onopen = function(e) {
       console.log("[open] Connection established");
       console.log("Sending to server");

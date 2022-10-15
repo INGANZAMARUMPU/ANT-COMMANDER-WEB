@@ -38,7 +38,7 @@
         </div>
         <div class="field">
           <label>Valeur</label>
-          <input type="number" v-model="value" placeholder="Valeur de la commande" />
+          <input type="text" v-model="value" placeholder="Valeur de la commande" />
         </div>
         <div class="logs">{{ logs }}</div>
         <div class="buttons">
@@ -106,9 +106,9 @@ export default {
     }
   },
   mounted(){
-    // this.socket = new WebSocket(`ws://${window.location.host}/robot/`);
     let vue = this
-    this.socket = new WebSocket(`ws://127.0.0.1:8000/robot/`);
+    this.socket = new WebSocket(`ws://${window.location.host}/robot/`);
+    // this.socket = new WebSocket(`ws://127.0.0.1:8000/robot/`);
     this.socket.onopen = function(e) {
       console.log("[open] Connection established");
       console.log("Sending to server");
@@ -136,7 +136,6 @@ export default {
         console.log(`[close] Connection closed cleanly, code=${event.code} reason=${event.reason}`);
       } else {
         console.log('[close] Connection died');
-        this.socket = new WebSocket(`ws://127.0.0.1:8000/robot/`);
       }
     };
 

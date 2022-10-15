@@ -1,6 +1,6 @@
 <template>
   <div class="component">
-    <h1>ANT ROBOT COMMANDER V1.0</h1>
+    <h1 class="title"></h1>
     <div class="options">
       <h1 @click="createCommand">+</h1>
       <h1>☼</h1>
@@ -44,5 +44,15 @@ export default {
   background-color: var(--primary-light);
   color: white;
   cursor: default;
+}
+@media screen and (min-width: 600px) {
+  .title::after{
+    content: "ANT ROBOT COMMANDER V1.0";
+  }
+}
+@media screen and (max-width: 600px) {
+  .title::after{
+    content: "ANT COMMANDER";
+  }
 }
 </style>

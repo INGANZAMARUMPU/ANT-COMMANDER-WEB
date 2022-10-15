@@ -2,7 +2,7 @@
   <div id="app">
     <TopBar @create="createCommand" @close="close"/>
     <div class="body">
-      <div class="terminal">
+      <div class="camera">
         Aha niho twandika ama commande turungitse n'ayo turonse,<br>
         hari n'igihe twohitamwo kuhashira camera mu ma version azokurikira
         <div class="content">
@@ -150,7 +150,7 @@ export default {
   height: calc(100% - 60px);
   display: flex;
 }
-.terminal{
+.camera{
   height: 100%;
   background-color: #111;
   flex-grow: 1;
@@ -166,5 +166,20 @@ export default {
 .line{
   display: flex;
   justify-content: center;
+}
+
+@media screen and (max-width: 500px) {
+  .body{
+    display: block;
+  }
+  .camera{
+    height: 50%;
+    width: 100%;
+  }
+  .commander{
+    width: 100%;
+    height: 50%;
+    overflow: auto;
+  }
 }
 </style>

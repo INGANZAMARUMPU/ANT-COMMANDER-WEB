@@ -13,6 +13,7 @@
 }
 #app{
     height: 100vh;
+    min-width: 400px;
 }
 input{
     margin: 5px 0;

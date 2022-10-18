@@ -151,8 +151,9 @@ export default {
   },
   mounted(){
     let vue = this
-    // this.socket = new WebSocket(`ws://${window.location.host}/robot/`);
-    this.socket = new WebSocket(`ws://127.0.0.1:8000/robot/`);
+    let protocol = window.location.protocol == "http:"?"ws":"wss"
+    this.socket = new WebSocket(`${protocol}://${window.location.host}/robot/`);
+    // this.socket = new WebSocket(`${protocol}://127.0.0.1:8000/robot/`);
     this.socket.onopen = function(e) {
       console.log("[open] Connection established");
       console.log("Sending to server");

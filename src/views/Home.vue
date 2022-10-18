@@ -67,7 +67,8 @@ export default {
       logs:"",
       socket:null,
       id:null,
-      stream:null
+      stream:null,
+      peer: new RTCPeerConnection(null)
     }
   },
   watch:{
@@ -113,17 +114,39 @@ export default {
       }).then( stream => {
         this.stream = stream
         output.srcObject = this.stream
+        this.stream.getTracks().forEach(track => {
+          this.peer.addTrack(track, stream)
+        })
       }).catch(error => {
         console.error(error)
       })
     },
     joinCamera(){
       let output = this.$refs.output
-      this.stream.getTracks().forEach(track => {
-        track.stop()
+      if(!!this.stream){
+        this.stream.getTracks().forEach(track => {
+          track.stop()
+        })
+        output.srcObject = null
+        output.pause()
+      }
+      this.setCameraStream()
+    },
+    playCommand(command){
+      for(var i = 0; i < sounds.length; i++){
+        track = "/static/"+sounds[i]+".mp3"
+        setTimeout(() => {
+          new Audio(track).play()
+        }, i*200)
+      }
+    },
+    setCameraStream(){
+      let camera_stream = new MediaStream()
+      let output = this.$refs.output
+      output.srcObject = camera_stream
+      this.peer.addEventListener("track", async event => {
+        camera_stream.addTrack(event.track, camera_stream)
       })
-      output.srcObject = null
-      output.pause()
     }
   },
   mounted(){
@@ -142,13 +165,16 @@ export default {
         console.log(`cannot play my own message`);
         return
       }
-      let sounds = data.message
-
-      for(var i = 0; i < sounds.length; i++){
-        track = "/static/"+sounds[i]+".mp3"
-        setTimeout(() => {
-          new Audio(track).play()
-        }, i*200)
+      switch (data.order) {
+        case "command":
+          vue.playCommand(data.message)
+          break;
+        case "camera":
+          vue.setCameraStream(data.sender)
+          break;
+        default:
+          console.log('Unkown protocol')
+          break;
       }
     };
 

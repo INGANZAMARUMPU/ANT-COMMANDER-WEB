@@ -147,49 +147,53 @@ export default {
       this.peer.addEventListener("track", async event => {
         camera_stream.addTrack(event.track, camera_stream)
       })
-    }
-  },
-  mounted(){
-    let vue = this
-    let protocol = window.location.protocol == "http:"?"ws":"wss"
-    this.socket = new WebSocket(`${protocol}://${window.location.host}/robot/`);
-    // this.socket = new WebSocket(`${protocol}://127.0.0.1:8000/robot/`);
-    this.socket.onopen = function(e) {
-      console.log("[open] Connection established");
-      console.log("Sending to server");
-    };
-    this.socket.onmessage = function(event) {
-      let data = JSON.parse(event.data)
-      console.log(`[message] Data received from server: ${event.data}`);
-      let track
-      if(data.sender == vue.id) {
-        console.log(`cannot play my own message`);
-        return
+    },
+    getSocketUrl(){
+      let protocol = window.location.protocol == "http:"?"ws":"wss"
+      if(this.$store.state.url == ""){
+        return `${protocol}://${window.location.host}/robot/`;
       }
+      return `${protocol}://127.0.0.1:8000/robot/`;
+    },
+    createSocket(url){
+      let vue = this
+      this.socket = new WebSocket(url);
+      this.socket.onopen = (e) => {
+        console.log("[open] Connection established");
+      };
+      this.socket.onclose = (error) => {
+        console.log('[close] Connection died');
+      };
+      this.socket.onerror = (error) => {
+        console.log(`[error] ${error.message}`);
+      };
+      this.socket.onmessage = (e) => {
+        let data = JSON.parse(e.data)
+        console.log(`[message] : ${event.data}`);
+        let track
+        if(data.sender == vue.id) {
+          return
+        }
+        vue.executeMessage(data)
+      }
+    },
+    executeMessage(data){
       switch (data.order) {
         case "command":
-          vue.playCommand(data.message)
+          this.playCommand(data.message)
           break;
         case "camera":
-          vue.setCameraStream(data.sender)
+          this.setCameraStream(data.sender)
           break;
         default:
           console.log('Unkown protocol')
           break;
       }
-    };
-
-    this.socket.onclose = function(event) {
-      if (event.wasClean) {
-        console.log(`[close] Connection closed cleanly, code=${event.code} reason=${event.reason}`);
-      } else {
-        console.log('[close] Connection died');
-      }
-    };
-
-    this.socket.onerror = function(error) {
-      console.log(`[error] ${error.message}`);
-    };
+    }
+  },
+  mounted(){
+    let url = this.getSocketUrl()
+    this.createSocket(url)
   }
 }
 </script>

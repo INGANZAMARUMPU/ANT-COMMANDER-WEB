@@ -5,7 +5,7 @@
       <div class="camera">
         <div class="controls">
           <button @click="startCamera">New</button>
-          <button @click="joinCamera">Join</button>
+          <button @click="joinStream">Join</button>
         </div>
         <video ref="output" autoplay playsinline/>
       </div>
@@ -61,14 +61,14 @@ export default {
   },
   data(){
     return {
-      label:"",
-      value:"",
-      commands:[],
-      logs:"",
-      socket:null,
-      id:null,
-      stream:null,
-      peer: new RTCPeerConnection(null)
+      label: "",
+      value: "",
+      commands: [],
+      logs: "",
+      socket: null,
+      id: null,
+      peer: null,
+      stream: new MediaStream(),
     }
   },
   watch:{
@@ -113,15 +113,12 @@ export default {
         'audio': false
       }).then( stream => {
         this.stream = stream
-        output.srcObject = this.stream
-        this.stream.getTracks().forEach(track => {
-          this.peer.addTrack(track, stream)
-        })
+        this.askForStream()
       }).catch(error => {
         console.error(error)
       })
     },
-    joinCamera(){
+    stopStream(){
       let output = this.$refs.output
       if(!!this.stream){
         this.stream.getTracks().forEach(track => {
@@ -130,7 +127,6 @@ export default {
         output.srcObject = null
         output.pause()
       }
-      this.setCameraStream()
     },
     playCommand(command){
       for(var i = 0; i < sounds.length; i++){
@@ -140,13 +136,21 @@ export default {
         }, i*200)
       }
     },
-    setCameraStream(){
-      let camera_stream = new MediaStream()
+    askForStream(){
+      this.socket.send(JSON.stringify({
+        "sender": this.id,
+        "order": "camera"
+      }))
+    },
+    streamMyCam(){
       let output = this.$refs.output
-      output.srcObject = camera_stream
-      this.peer.addEventListener("track", async event => {
-        camera_stream.addTrack(event.track, camera_stream)
-      })
+      output.srcObject = this.stream
+      this.peer.addStream(this.stream)
+      this.peer.createOffer()
+    },
+    joinStream(){
+      let output = this.$refs.output
+      output.srcObject = this.stream
     },
     getSocketUrl(){
       let protocol = window.location.protocol == "http:"?"ws":"wss"
@@ -170,21 +174,22 @@ export default {
       this.socket.onmessage = (e) => {
         let data = JSON.parse(e.data)
         console.log(`[message] : ${event.data}`);
-        let track
-        if(data.sender == vue.id) {
-          return
-        }
         vue.executeMessage(data)
       }
     },
     executeMessage(data){
       switch (data.order) {
-        case "command":
+        case "dtmf":
+          if(data.sender == this.id) {
+            break
+          }
           this.playCommand(data.message)
           break;
         case "camera":
-          this.setCameraStream(data.sender)
-          break;
+          if(data.sender == this.id) {
+            this.streamMyCam()
+            break
+          }
         default:
           console.log('Unkown protocol')
           break;
@@ -194,6 +199,13 @@ export default {
   mounted(){
     let url = this.getSocketUrl()
     this.createSocket(url)
+    this.peer = new RTCPeerConnection(null)
+    this.peer.addEventListener("track", async event => {
+      console.log("new track", this.peer)
+      this.stopStream()
+      this.stream = event.streams[0]
+      this.joinStream()
+    })
   }
 }
 </script>

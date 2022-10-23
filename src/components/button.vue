@@ -20,7 +20,7 @@ export default {
     play(){
       let data = {
         "sender" : this.$store.state.id,
-        "order" : "command",
+        "order" : "dtmf",
         "message" : this.value
       }
       this.$store.state.socket.send(JSON.stringify(data))

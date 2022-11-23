@@ -150,8 +150,8 @@ export default {
     askStream(){
     },
     playCommand(command){
-      for(var i = 0; i < sounds.length; i++){
-        track = "/static/"+sounds[i]+".mp3"
+      for(var i = 0; i < command.length; i++){
+        let track = "/static/"+command[i]+".mp3"
         setTimeout(() => {
           new Audio(track).play()
         }, i*200)
@@ -187,6 +187,7 @@ export default {
           if(data.sender == this.id) {
             break
           }
+          console.log("NEW DTMF\n", data.message)
           this.playCommand(data.message)
           break;
         case "ask-camera":

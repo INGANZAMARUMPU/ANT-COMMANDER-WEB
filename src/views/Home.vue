@@ -5,9 +5,9 @@
       <div class="camera">
         <div class="controls">
           <button @click="startCamera">New</button>
-          <button @click="joinStream">Join</button>
+          <button @click="askStream">Join</button>
         </div>
-        <video ref="output" autoplay playsinline/>
+        <video ref="output" id="output" autoplay playsinline/>
       </div>
       <div class="commander">
         <div class="control">
@@ -119,15 +119,35 @@ export default {
         this.local_rtc.addStream(stream);
         return this.local_rtc.createOffer();
       }).then(offer => {
-        return this.local_rtc.setLocalDescription(new RTCSessionDescription(offer))
+        let description = new RTCSessionDescription(offer)
+        this.sendOffer('set-offer', description.toJSON())
+        return this.local_rtc.setLocalDescription(description)
       }).catch(error => {
         console.error(error)
       })
     },
-    joinStream(){
-      this.remote_rtc.createAnswer().then(answer => {
-        return this.remote_rtc.setLocalDescription(new RTCSessionDescription(answer))
+    getOffer(description){
+      this.remote_rtc.setRemoteDescription(description)
+      .then(() => {
+        return this.remote_rtc.createAnswer()
+      }).then(answer => {
+        let description = new RTCSessionDescription(answer)
+        this.sendOffer('offer-answer', description)
+        return this.remote_rtc.setLocalDescription()
       })
+    },
+    acceptOffer(description){
+      this.local_rtc.setRemoteDescription(description)
+    },
+    sendOffer(type, description){
+      let data = {
+        "sender" : this.$store.state.id,
+        "order" : type,
+        "message" : description
+      }
+      this.$store.state.socket.send(JSON.stringify(data))
+    },
+    askStream(){
     },
     playCommand(command){
       for(var i = 0; i < sounds.length; i++){
@@ -158,7 +178,6 @@ export default {
       };
       this.socket.onmessage = (e) => {
         let data = JSON.parse(e.data)
-        console.log(`[message] : ${event.data}`);
         vue.executeMessage(data)
       }
     },
@@ -170,11 +189,23 @@ export default {
           }
           this.playCommand(data.message)
           break;
-        case "camera":
+        case "ask-camera":
           if(data.sender == this.id) {
             this.streamMyCam()
             break
           }
+        case "set-offer":
+          if(data.sender == this.id) {
+            break
+          }
+          this.getOffer(data.message)
+          break
+        case "offer-answer":
+          if(data.sender == this.id) {
+            break
+          }
+          this.acceptOffer(data.message)
+          break
         default:
           console.log('Unkown protocol')
           break;
@@ -184,14 +215,19 @@ export default {
   mounted(){
     let url = this.getSocketUrl()
     this.createSocket(url)
-    // this.remote_rtc.onicecandidate = e => {
-    //   if(e.candidate){
-    //     this.local_rtc.addIceCandidate(e.candidate)
-    //   }
-    // }
-    // this.remote_rtc.ontrack = e => {
-    //   this.$refs.output.srcObject = e.streams[0]
-    // }
+    this.remote_rtc.onicecandidate = e => {
+      if(e.candidate){
+        this.local_rtc.addIceCandidate(e.candidate)
+      }
+    }
+    this.local_rtc.onicecandidate = e => {
+      if(e.candidate){
+        this.remote_rtc.addIceCandidate(e.candidate)
+      }
+    }
+    this.remote_rtc.ontrack = e => {
+      this.$refs.output.srcObject = e.streams[0]
+    }
   }
 }
 </script>

@@ -119,31 +119,32 @@ export default {
         this.local_rtc.addStream(stream);
         return this.local_rtc.createOffer();
       }).then(offer => {
-        let description = new RTCSessionDescription(offer)
-        this.sendOffer('set-offer', description.toJSON())
-        return this.local_rtc.setLocalDescription(description)
+        return this.local_rtc.setLocalDescription(new RTCSessionDescription(offer))
+      }).then(() => {
+        let description = this.local_rtc.localDescription
+        this.sendSocketMessage('set-offer', description.toJSON())
       }).catch(error => {
         console.error(error)
       })
     },
     getOffer(description){
       this.remote_rtc.setRemoteDescription(description)
-      .then(() => {
-        return this.remote_rtc.createAnswer()
-      }).then(answer => {
-        let description = new RTCSessionDescription(answer)
-        this.sendOffer('offer-answer', description)
-        return this.remote_rtc.setLocalDescription()
+      this.remote_rtc.createAnswer().then(answer => {
+        console.log(this.remote_rtc.remoteDescription.toJSON())
+        return this.remote_rtc.setLocalDescription(new RTCSessionDescription(answer))
+      }).then(() => {
+        let description = this.remote_rtc.localDescription
+        this.sendSocketMessage('offer-answer', description.toJSON())
       })
     },
     acceptOffer(description){
       this.local_rtc.setRemoteDescription(description)
     },
-    sendOffer(type, description){
+    sendSocketMessage(type, infos){
       let data = {
         "sender" : this.$store.state.id,
         "order" : type,
-        "message" : description
+        "message" : infos
       }
       this.$store.state.socket.send(JSON.stringify(data))
     },
@@ -191,7 +192,7 @@ export default {
           break;
         case "ask-camera":
           if(data.sender == this.id) {
-            this.streamMyCam()
+            alert('not yet implemented')
             break
           }
         case "set-offer":
@@ -206,6 +207,18 @@ export default {
           }
           this.acceptOffer(data.message)
           break
+        case "remote-candidate":
+          if(data.sender == this.id) {
+            break
+          }
+          this.local_rtc.addIceCandidate(data.message)
+          break
+        case "local-candidate":
+          if(data.sender == this.id) {
+            break
+          }
+          this.remote_rtc.addIceCandidate(data.message)
+          break
         default:
           console.log('Unkown protocol')
           break;
@@ -217,12 +230,12 @@ export default {
     this.createSocket(url)
     this.remote_rtc.onicecandidate = e => {
       if(e.candidate){
-        this.local_rtc.addIceCandidate(e.candidate)
+        this.sendSocketMessage('remote-candidate', e.candidate)
       }
     }
     this.local_rtc.onicecandidate = e => {
       if(e.candidate){
-        this.remote_rtc.addIceCandidate(e.candidate)
+        this.sendSocketMessage('local-candidate', e.candidate)
       }
     }
     this.remote_rtc.ontrack = e => {

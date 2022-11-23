@@ -68,6 +68,8 @@ export default {
       socket: null,
       id: null,
       stream: new MediaStream(),
+      local_rtc: new RTCPeerConnection(),
+      remote_rtc: new RTCPeerConnection()
     }
   },
   watch:{
@@ -114,8 +116,17 @@ export default {
         this.stream = stream
         let output = this.$refs.output
         output.srcObject = this.stream
+        this.local_rtc.addStream(stream);
+        return this.local_rtc.createOffer();
+      }).then(offer => {
+        return this.local_rtc.setLocalDescription(new RTCSessionDescription(offer))
       }).catch(error => {
         console.error(error)
+      })
+    },
+    joinStream(){
+      this.remote_rtc.createAnswer().then(answer => {
+        return this.remote_rtc.setLocalDescription(new RTCSessionDescription(answer))
       })
     },
     playCommand(command){
@@ -173,6 +184,14 @@ export default {
   mounted(){
     let url = this.getSocketUrl()
     this.createSocket(url)
+    // this.remote_rtc.onicecandidate = e => {
+    //   if(e.candidate){
+    //     this.local_rtc.addIceCandidate(e.candidate)
+    //   }
+    // }
+    // this.remote_rtc.ontrack = e => {
+    //   this.$refs.output.srcObject = e.streams[0]
+    // }
   }
 }
 </script>

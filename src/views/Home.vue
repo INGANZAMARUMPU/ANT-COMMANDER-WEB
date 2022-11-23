@@ -67,7 +67,6 @@ export default {
       logs: "",
       socket: null,
       id: null,
-      peer: null,
       stream: new MediaStream(),
     }
   },
@@ -113,20 +112,11 @@ export default {
         'audio': false
       }).then( stream => {
         this.stream = stream
-        this.askForStream()
+        let output = this.$refs.output
+        output.srcObject = this.stream
       }).catch(error => {
         console.error(error)
       })
-    },
-    stopStream(){
-      let output = this.$refs.output
-      if(!!this.stream){
-        this.stream.getTracks().forEach(track => {
-          track.stop()
-        })
-        output.srcObject = null
-        output.pause()
-      }
     },
     playCommand(command){
       for(var i = 0; i < sounds.length; i++){
@@ -135,22 +125,6 @@ export default {
           new Audio(track).play()
         }, i*200)
       }
-    },
-    askForStream(){
-      this.socket.send(JSON.stringify({
-        "sender": this.id,
-        "order": "camera"
-      }))
-    },
-    streamMyCam(){
-      let output = this.$refs.output
-      output.srcObject = this.stream
-      this.peer.addStream(this.stream)
-      this.peer.createOffer()
-    },
-    joinStream(){
-      let output = this.$refs.output
-      output.srcObject = this.stream
     },
     getSocketUrl(){
       let protocol = window.location.protocol == "http:"?"ws":"wss"
@@ -199,13 +173,6 @@ export default {
   mounted(){
     let url = this.getSocketUrl()
     this.createSocket(url)
-    this.peer = new RTCPeerConnection(null)
-    this.peer.addEventListener("track", async event => {
-      console.log("new track", this.peer)
-      this.stopStream()
-      this.stream = event.streams[0]
-      this.joinStream()
-    })
   }
 }
 </script>

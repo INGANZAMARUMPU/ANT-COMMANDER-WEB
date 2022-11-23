@@ -130,7 +130,6 @@ export default {
     getOffer(description){
       this.remote_rtc.setRemoteDescription(description)
       this.remote_rtc.createAnswer().then(answer => {
-        console.log(this.remote_rtc.remoteDescription.toJSON())
         return this.remote_rtc.setLocalDescription(new RTCSessionDescription(answer))
       }).then(() => {
         let description = this.remote_rtc.localDescription

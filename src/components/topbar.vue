@@ -21,7 +21,7 @@ export default {
 .component{
   height: 60px;
   box-shadow: 0 0 5px;
-  padding: 0 20px;
+  padding: 0 0 0 20px;
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -53,6 +53,17 @@ export default {
 @media screen and (max-width: 600px) {
   .title::after{
     content: "ANT COMMANDER";
+  }
+}
+@media screen and (max-width: 400px) {
+  .title::after{
+    font-size: .8em;
+  }
+  .component{
+    padding: 0 0 0 10px;
+  }
+  .options > *{
+    padding: 0 10px;
   }
 }
 </style>

@@ -159,7 +159,7 @@ export default {
     },
     getSocketUrl(){
       let protocol = window.location.protocol == "http:"?"ws":"wss"
-      if(window.location.host != "localhost"){
+      if(!window.location.host.includes("localhost")){
         return `${protocol}://${window.location.host}/robot/`;
       }
       return `${protocol}://127.0.0.1:8000/robot/`;

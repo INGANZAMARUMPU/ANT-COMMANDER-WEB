@@ -11,6 +11,9 @@
     outline:0;
     font-family: var(--monospace);
 }
+body{
+    min-width: 300px;
+}
 #app{
     height: 100vh;
     min-width: 100%;

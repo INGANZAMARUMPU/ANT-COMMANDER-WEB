@@ -4,7 +4,9 @@
     <div class="body">
       <div class="camera">
         <div class="controls">
-          <button @click="startCamera">New</button>
+          <button @click="switchLive">
+            {{ is_hosting?"Stop":"Start" }}
+          </button>
           <button @click="askStream">Join</button>
         </div>
         <video ref="output" id="output" autoplay playsinline/>
@@ -64,6 +66,7 @@ export default {
       label: "",
       value: "",
       commands: [],
+      is_hosting: false,
       logs: "",
       socket: null,
       id: null,
@@ -105,6 +108,13 @@ export default {
         this.logs = "iyo valeur yarafashwe"
       }
     },
+    switchLive(){
+      if(this.is_hosting){
+        this.stopCamera()
+        return
+      }
+      this.startCamera()
+    },
     startCamera(){
       let output = this.$refs.output
       navigator.mediaDevices.getUserMedia({
@@ -124,6 +134,8 @@ export default {
       }).catch(error => {
         console.error(error)
       })
+    },
+    stopCamera(){
     },
     getOffer(description){
       this.remote_rtc.setRemoteDescription(description)
@@ -191,12 +203,15 @@ export default {
           break;
         case "join-room":
           let description = this.local_rtc.localDescription
+          if(!description) break;
           this.sendSocketMessage('set-offer', description.toJSON())
           break
         case "set-offer":
+          this.is_hosting = false
           this.getOffer(data.message)
           break
         case "offer-answer":
+          this.is_hosting = true
           this.acceptOffer(data.message)
           break
         case "remote-candidate":

@@ -75,8 +75,6 @@ export default {
   watch:{
     socket(new_val){
       this.$store.state.socket = new_val
-      this.id = Date.now()
-      this.$store.state.id = this.id
     }
   },
   methods:{
@@ -169,6 +167,8 @@ export default {
       let vue = this
       this.socket = new WebSocket(url);
       this.socket.onopen = (e) => {
+        this.id = Date.now()
+        this.$store.state.id = this.id
         console.log("[open] Connection established");
       };
       this.socket.onclose = (error) => {
@@ -189,8 +189,9 @@ export default {
           console.log("NEW DTMF\n", data.message)
           this.playCommand(data.message)
           break;
-        case "ask-camera":
-          alert('not yet implemented')
+        case "join-room":
+          let description = this.local_rtc.localDescription
+          this.sendSocketMessage('set-offer', description.toJSON())
           break
         case "set-offer":
           this.getOffer(data.message)

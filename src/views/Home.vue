@@ -148,6 +148,7 @@ export default {
       this.$store.state.socket.send(JSON.stringify(data))
     },
     askStream(){
+      this.sendSocketMessage("join-room", null)
     },
     playCommand(command){
       for(var i = 0; i < command.length; i++){
@@ -182,41 +183,25 @@ export default {
       }
     },
     executeMessage(data){
+      if(data.sender == this.id) return
       switch (data.order) {
         case "dtmf":
-          if(data.sender == this.id) {
-            break
-          }
           console.log("NEW DTMF\n", data.message)
           this.playCommand(data.message)
           break;
         case "ask-camera":
-          if(data.sender == this.id) {
-            alert('not yet implemented')
-            break
-          }
+          alert('not yet implemented')
+          break
         case "set-offer":
-          if(data.sender == this.id) {
-            break
-          }
           this.getOffer(data.message)
           break
         case "offer-answer":
-          if(data.sender == this.id) {
-            break
-          }
           this.acceptOffer(data.message)
           break
         case "remote-candidate":
-          if(data.sender == this.id) {
-            break
-          }
           this.local_rtc.addIceCandidate(data.message)
           break
         case "local-candidate":
-          if(data.sender == this.id) {
-            break
-          }
           this.remote_rtc.addIceCandidate(data.message)
           break
         default:

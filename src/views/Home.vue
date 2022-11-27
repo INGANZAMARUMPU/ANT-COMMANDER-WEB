@@ -72,7 +72,7 @@ export default {
       id: null,
       stream: new MediaStream(),
       local_rtc: new RTCPeerConnection(),
-      remote_rtc: new RTCPeerConnection()
+      all_remote_rtcs:{}
     }
   },
   watch:{
@@ -136,13 +136,20 @@ export default {
       })
     },
     stopCamera(){
+      // console.log("stop streaming...")
+      // this.stream.getTracks().forEach(track => {
+      //   track.stop()
+      // })
+      // this.local_rtc.removeStream(this.stream)
+      // this.is_hosting = false
     },
-    getOffer(description){
-      this.remote_rtc.setRemoteDescription(description)
-      this.remote_rtc.createAnswer().then(answer => {
-        return this.remote_rtc.setLocalDescription(new RTCSessionDescription(answer))
+    getOffer(id, description){
+      let rtc = this.all_remote_rtcs[id]
+      rtc.setRemoteDescription(description)
+      rtc.createAnswer().then(answer => {
+        return rtc.setLocalDescription(new RTCSessionDescription(answer))
       }).then(() => {
-        let description = this.remote_rtc.localDescription
+        let description = rtc.localDescription
         this.sendSocketMessage('offer-answer', description.toJSON())
       })
     },
@@ -196,6 +203,10 @@ export default {
     },
     executeMessage(data){
       if(data.sender == this.id) return
+      if(!!data.sender && !data.sender in this.all_remote_rtcs){
+        createPeer(data.sender)
+      }
+      this.createPeer(data.sender)
       switch (data.order) {
         case "dtmf":
           console.log("NEW DTMF\n", data.message)
@@ -208,7 +219,7 @@ export default {
           break
         case "set-offer":
           this.is_hosting = false
-          this.getOffer(data.message)
+          this.getOffer(data.sender, data.message)
           break
         case "offer-answer":
           this.is_hosting = true
@@ -218,29 +229,34 @@ export default {
           this.local_rtc.addIceCandidate(data.message)
           break
         case "local-candidate":
-          this.remote_rtc.addIceCandidate(data.message)
+          let rtc = this.all_remote_rtcs[data.sender]
+          rtc.addIceCandidate(data.message)
           break
         default:
           console.log('Unkown protocol')
           break;
       }
+    },
+    createPeer(id){
+      let rtc = new RTCPeerConnection()
+      rtc.onicecandidate = e => {
+        if(e.candidate){
+          this.sendSocketMessage('remote-candidate', e.candidate)
+        }
+      }
+      rtc.ontrack = e => {
+        this.$refs.output.srcObject = e.streams[0]
+      }
+      this.all_remote_rtcs[id] = rtc
     }
   },
   mounted(){
     let url = this.getSocketUrl()
     this.createSocket(url)
-    this.remote_rtc.onicecandidate = e => {
-      if(e.candidate){
-        this.sendSocketMessage('remote-candidate', e.candidate)
-      }
-    }
     this.local_rtc.onicecandidate = e => {
       if(e.candidate){
         this.sendSocketMessage('local-candidate', e.candidate)
       }
-    }
-    this.remote_rtc.ontrack = e => {
-      this.$refs.output.srcObject = e.streams[0]
     }
   }
 }

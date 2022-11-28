@@ -124,6 +124,7 @@ export default {
         this.stream = stream
         let output = this.$refs.output
         output.srcObject = this.stream
+        console.log(stream)
         this.local_rtc.addStream(stream);
         return this.local_rtc.createOffer();
       }).then(offer => {
@@ -136,24 +137,24 @@ export default {
       })
     },
     stopCamera(){
-      // console.log("stop streaming...")
-      // this.stream.getTracks().forEach(track => {
-      //   track.stop()
-      // })
-      // this.local_rtc.removeStream(this.stream)
-      // this.is_hosting = false
+      console.log("stop streaming...")
+      this.stream.getTracks().forEach(track => {
+        track.stop()
+      })
+      this.local_rtc.removeStream(this.stream)
+      this.is_hosting = false
     },
     getOffer(id, description){
-      let rtc = this.all_remote_rtcs[id]
-      rtc.setRemoteDescription(description)
-      rtc.createAnswer().then(answer => {
-        return rtc.setLocalDescription(new RTCSessionDescription(answer))
-      }).then(() => {
-        let description = rtc.localDescription
-        this.sendSocketMessage('offer-answer', description.toJSON())
+      this.local_rtc.setRemoteDescription(description)
+      this.local_rtc.createAnswer(answer => {
+        this.local_rtc.setLocalDescription(answer)
+        this.sendSocketMessage('offer-answer', answer)
+      }, error => {
+        console.error(error)
       })
     },
-    acceptOffer(description){
+    acceptOffer(id, description){
+      this.is_hosting = true
       this.local_rtc.setRemoteDescription(description)
     },
     sendSocketMessage(type, infos){
@@ -188,13 +189,13 @@ export default {
       this.socket.onopen = (e) => {
         this.id = Date.now()
         this.$store.state.id = this.id
-        console.log("[open] Connection established");
+        console.log("[SOCKET] Connection established");
       };
       this.socket.onclose = (error) => {
-        console.log('[close] Connection died');
+        console.log('[SOCKET] Connection died');
       };
       this.socket.onerror = (error) => {
-        console.log(`[error] ${error.message}`);
+        console.log(`[SOCKET] ${error.message}`);
       };
       this.socket.onmessage = (e) => {
         let data = JSON.parse(e.data)
@@ -213,24 +214,23 @@ export default {
           this.playCommand(data.message)
           break;
         case "join-room":
+          console.log('[WebRTC] recieved join room command');
           let description = this.local_rtc.localDescription
           if(!description) break;
           this.sendSocketMessage('set-offer', description.toJSON())
           break
         case "set-offer":
+          console.log('[WebRTC] recieved set offer command');
           this.is_hosting = false
           this.getOffer(data.sender, data.message)
           break
         case "offer-answer":
-          this.is_hosting = true
-          this.acceptOffer(data.message)
+          console.log('[WebRTC] recieved offer answer command');
+          this.acceptOffer(data.sender, data.message)
           break
-        case "remote-candidate":
+        case "new-candidate":
+          console.log('[WebRTC] recieved new candidate command');
           this.local_rtc.addIceCandidate(data.message)
-          break
-        case "local-candidate":
-          let rtc = this.all_remote_rtcs[data.sender]
-          rtc.addIceCandidate(data.message)
           break
         default:
           console.log('Unkown protocol')
@@ -241,11 +241,8 @@ export default {
       let rtc = new RTCPeerConnection()
       rtc.onicecandidate = e => {
         if(e.candidate){
-          this.sendSocketMessage('remote-candidate', e.candidate)
+          this.sendSocketMessage('new-candidate', e.candidate)
         }
-      }
-      rtc.ontrack = e => {
-        this.$refs.output.srcObject = e.streams[0]
       }
       this.all_remote_rtcs[id] = rtc
     }
@@ -255,8 +252,12 @@ export default {
     this.createSocket(url)
     this.local_rtc.onicecandidate = e => {
       if(e.candidate){
-        this.sendSocketMessage('local-candidate', e.candidate)
+        this.sendSocketMessage('new-candidate', e.candidate)
       }
+    }
+    this.local_rtc.ontrack = e => {
+      console.log(e.streams)
+      this.$refs.output.srcObject = e.streams[0]
     }
   }
 }

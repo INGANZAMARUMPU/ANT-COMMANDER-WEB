@@ -118,7 +118,9 @@ export default {
     startCamera(){
       let output = this.$refs.output
       navigator.mediaDevices.getUserMedia({
-        'video': true,
+        'video': {
+         facingMode: 'environment'
+        },
         'audio': false
       }).then( stream => {
         this.stream = stream

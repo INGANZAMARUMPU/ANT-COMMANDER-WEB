@@ -175,7 +175,7 @@ export default {
         let track = "/static/"+command[i]+".mp3"
         setTimeout(() => {
           new Audio(track).play()
-        }, i*200)
+        }, i*500)
       }
     },
     getSocketUrl(){

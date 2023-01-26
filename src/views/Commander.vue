@@ -11,7 +11,7 @@
         </div>
         <div class="robots">
           <Robot
-            class="robot" v-for="ant in robots"
+            v-for="ant in robots"
             :name="ant.name" :id="ant.id"
             :selected="selected.id==ant.id"
             @selected="selected=ant"
@@ -19,7 +19,23 @@
         </div>
       </div>
       <div class="buttons">
-        
+        <div class="control">
+          <div class="line">
+            <Button :label="buttons[0].label" :value="buttons[0].value"/>
+          </div>
+          <div class="line">
+            <Button :label="buttons[1].label" :value="buttons[1].value"/>
+            <Button :label="buttons[2].label" :value="buttons[2].value"/>
+            <Button :label="buttons[3].label" :value="buttons[3].value"/>
+          </div>
+          <div class="line">
+            <Button :label="buttons[4].label" :value="buttons[4].value"/>
+          </div>
+        </div>
+        <Button
+          v-for="button in buttons.slice(5)"
+          :label="button.label"
+          :value="button.value"/>
       </div>
     </div>
   </div>
@@ -46,7 +62,13 @@ export default {
         {id:16153158,name:"Ant no. 58"},
         {id:16153159,name:"Ant no. 59"},
       ],
+      buttons:this.$store.state.buttons,
       msg:"",
+    }
+  },
+  watch:{
+    "$store.state.buttons"(new_val){
+      this.buttons = new_val
     }
   },
   methods:{
@@ -77,5 +99,14 @@ export default {
   flex-direction: row-reverse;
   flex-wrap: wrap-reverse;
   gap: 5px;
+}
+.buttons{
+  flex-grow: 1;
+}
+.control{
+  width: 100%;
+  display: flex;
+  align-items: center;
+  flex-direction: column;
 }
 </style>

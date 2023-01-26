@@ -47,12 +47,12 @@ export default {
 }
 @media screen and (min-width: 600px) {
   .title::after{
-    content: "ANT ROBOT COMMANDER V1.0";
+    content: "ANT ROBOT COMMANDER V2.0";
   }
 }
 @media screen and (max-width: 600px) {
   .title::after{
-    content: "ANT COMMANDER";
+    content: "ANT COMMANDER V2.0";
   }
 }
 @media screen and (max-width: 400px) {

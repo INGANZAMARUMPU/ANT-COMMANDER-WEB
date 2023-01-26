@@ -81,7 +81,7 @@ export default {
       buttons:this.$store.state.buttons,
       msg:"",
       button_shown: false,
-      current_button: null
+      current_button: {}
     }
   },
   watch:{
@@ -99,7 +99,7 @@ export default {
     },
     closeDialogs(){
       this.button_shown=false
-      this.current_button=null
+      this.current_button={}
     }
   }
 }

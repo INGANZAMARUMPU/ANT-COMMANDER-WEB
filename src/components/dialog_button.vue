@@ -12,17 +12,17 @@
           <label>Nom de la commande:</label>
           <input type="text"
             placeholder="à quoi servira la commande" 
-            v-model="nom">
+            v-model="nom" :disabled="item.frozen">
         </div>
         <div class="field">
           <label>Valeur:</label>
-          <input type="number"
+          <input type="text"
             placeholder="le code DMTF" 
             v-model="code">
         </div>
         <div class="buttons">
           <button @click="changeConfig">
-            Ajouter
+            {{ !!item.label?"Modifier":"Ajouter"}}
           </button>
         </div>
       </div>
@@ -54,9 +54,9 @@ export default {
       this.$emit("close");
     },
     changeConfig(){
-      if(!!this.item){
-        this.item.nom = this.label
-        this.item.code = this.value 
+      if(!!this.item.label){
+        this.item.label = this.nom
+        this.item.value = this.code 
       } else {
         let data = {
           label:this.nom,

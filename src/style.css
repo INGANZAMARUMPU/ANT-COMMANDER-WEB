@@ -21,7 +21,7 @@ body{
 input, button, .button{
     font-size: 1.1em;
 }
-input{
+input:not(input[type=radio]){
     margin: 5px 0;
     padding: 3px 10px;
     height: 40px;

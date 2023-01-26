@@ -4,13 +4,26 @@
       <h2>Choose mode</h2>
       <div>
         <div class="field">
-          <label for="nom">Nom du Robot:</label>
+          <label>Choisissez le mode:</label>
+          <div class="inline">
+            <div>
+              <input type="radio" value="commander" name="mode" id="commander" v-model="mode">
+              <label for="commander">Commander</label>
+            </div>
+            <div>
+              <input type="radio" value="robot" name="mode" id="robot" v-model="mode">
+              <label for="robot">Robot</label>
+            </div>
+          </div>
+        </div>
+        <div class="field" v-if="mode=='robot'">
+          <label>Nom du Robot:</label>
           <input type="text"
             placeholder="Nom a affecter au robot" 
             v-model="nom">
         </div>
         <div class="field">
-          <label for="password">Mot de passe:</label>
+          <label>Mot de passe:</label>
           <input type="password"
             placeholder="mot de passe de configuration" 
             v-model="password">
@@ -33,8 +46,14 @@ export default {
   },
   data(){
     return {
+      mode:"commander",
       nom:"",
       password:""
+    }
+  },
+  methods:{
+    changeConfig(){
+      this.$emit("changed", this.mode)
     }
   }
 };
@@ -59,7 +78,7 @@ h2{
   box-sizing: border-box;
   padding: 15px;
   border-radius: 5px;
-  max-width: 300px;
+  max-width: 350px;
 }
 .field{
   margin-bottom: 10px;
@@ -67,6 +86,19 @@ h2{
 .buttons{
   display: flex;
   justify-content: flex-end;
+}
+.inline{
+  display: flex;
+  gap: 10px;
+  padding-top: 10px;
+}
+.inline>div{
+  display: flex;
+  gap: 5px;
+  align-items: baseline;
+}
+.field>label{
+  font-weight: bold;
 }
 @media screen and (max-width: 800px) {
   .content {

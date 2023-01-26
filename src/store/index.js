@@ -5,6 +5,7 @@ export default createStore({
     url:"",
     socket:null,
     id:null,
+    mode: ""
   },
   getters: {
   },

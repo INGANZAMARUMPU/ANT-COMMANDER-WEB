@@ -18,14 +18,17 @@ body{
     height: 100vh;
     min-width: 100%;
 }
+input, button, .button{
+    font-size: 1.1em;
+}
 input{
     margin: 5px 0;
     padding: 3px 10px;
+    height: 40px;
 }
 button, .button{
     display: inline-block;
-    padding: 5px 20px;
-    margin: 5px;
+    padding: 10px 20px;
     background-color: var(--primary);
     border: 0;
     color: white;

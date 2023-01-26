@@ -21,24 +21,29 @@
       <div class="buttons">
         <div class="control">
           <div class="line">
-            <Button :label="buttons[0].label" :value="buttons[0].value"/>
+            <Button 
+              :item="buttons[0]"/>
           </div>
           <div class="line">
-            <Button :label="buttons[1].label" :value="buttons[1].value"/>
-            <Button :label="buttons[2].label" :value="buttons[2].value"/>
-            <Button :label="buttons[3].label" :value="buttons[3].value"/>
+            <Button 
+              :item="buttons[1]"/>
+            <Button 
+              :item="buttons[2]"/>
+            <Button 
+              :item="buttons[3]"/>
           </div>
           <div class="line">
-            <Button :label="buttons[4].label" :value="buttons[4].value"/>
+            <Button 
+              :item="buttons[4]"/>
           </div>
         </div>
         <Button
           v-for="button in buttons.slice(5)"
-          :label="button.label"
-          :value="button.value"/>
+          :item="button"/>
       </div>
     </div>
     <DialogButton
+      @close="button_shown=false"
       v-if="button_shown"/>
   </div>
 </template>

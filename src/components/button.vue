@@ -1,15 +1,16 @@
 <template>
   <div class="button" @click="play">
-    <label>{{ label }}</label>
-    <div class="value">{{ value }}</div>
+    <label :class="{'big':item.frozen}">
+      {{ item.label }}
+    </label>
+    <div class="value">{{ item.value }}</div>
   </div>
 </template>
 
 <script>
 export default {
   props:{
-    label:{type:String, required:true},
-    value:{type:String, required:true},
+     item:{type:Object, required:true},
   },
   data(){
     return {
@@ -34,6 +35,8 @@ export default {
 }
 .button label{
   font-weight: 800;
+}
+.button .big{
   font-size: 2em;
 }
 .value{

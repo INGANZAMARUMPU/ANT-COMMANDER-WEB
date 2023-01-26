@@ -1,23 +1,28 @@
 <template>
   <div class="parent" @click.stop>
     <div class="content">
-      <h2>Choose mode</h2>
+      <div class="title">
+        <button class="close" @click="$emit('close')">
+          &times
+        </button>
+        <h2>Créer une commande</h2>
+      </div>
       <div>
         <div class="field">
-          <label>Nom du Robot:</label>
+          <label>Nom de la commande:</label>
           <input type="text"
-            placeholder="Nom a affecter au robot" 
+            placeholder="à quoi servira la commande" 
             v-model="nom">
         </div>
         <div class="field">
-          <label>Mot de passe:</label>
-          <input type="password"
-            placeholder="clé de configuration" 
-            v-model="password">
+          <label>Valeur:</label>
+          <input type="number"
+            placeholder="le code DMTF" 
+            v-model="code">
         </div>
         <div class="buttons">
           <button @click="changeConfig">
-            Choisir
+            Ajouter
           </button>
         </div>
       </div>
@@ -33,14 +38,18 @@ export default {
   },
   data(){
     return {
-      mode:"commander",
       nom:"",
-      password:""
+      code:""
     }
   },
   methods:{
     changeConfig(){
-      this.$emit("changed", this.mode)
+      let data = {
+        label:this.nom,
+        value: this.code
+      }
+      this.$store.state.buttons.push(data)
+      this.$emit('close')
     }
   }
 };
@@ -48,7 +57,6 @@ export default {
 <style scoped>
 h2{
   margin-bottom: 10px;
-  text-align: center;
 }
 .parent{
   position: fixed;
@@ -80,12 +88,21 @@ h2{
   gap: 10px;
   padding-top: 5px;
 }
-.inline>div{
-  display: flex;
-  align-items: baseline;
+.title{
+  position: relative;
 }
-.inline label{
-  padding-left: 5px;
+.close{
+  position: absolute;
+  background-color: red;
+  height: 30px;
+  width: 30px;
+  padding: 5px;
+  border-radius: 5px;
+  top: -5px;
+  right: -5px;
+}
+button{
+  padding: 10px;
 }
 .field>label{
   font-weight: bold;

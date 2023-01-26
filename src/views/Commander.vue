@@ -50,8 +50,9 @@
       </div>
     </div>
     <DialogButton
-      @close="button_shown=false"
-      v-if="button_shown"/>
+      :item="current_button"
+      @close="closeDialogs"
+      v-show="button_shown"/>
   </div>
 </template>
 
@@ -79,7 +80,8 @@ export default {
       ],
       buttons:this.$store.state.buttons,
       msg:"",
-      button_shown: false
+      button_shown: false,
+      current_button: null
     }
   },
   watch:{
@@ -89,10 +91,15 @@ export default {
   },
   methods:{
     editButton(button){
-      console.log(button)
+      this.current_button = button
+      this.button_shown = true
     },
     deleteButton(index){
       this.$store.state.buttons.splice(index, 1)
+    },
+    closeDialogs(){
+      this.button_shown=false
+      this.current_button=null
     }
   }
 }

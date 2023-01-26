@@ -31,24 +31,36 @@
 </template>
 <script>
 export default {
-  methods:{
-    close(){
-      this.$emit("close");
-    }
-  },
+  props:[ "item" ],
   data(){
     return {
       nom:"",
       code:""
     }
   },
-  methods:{
-    changeConfig(){
-      let data = {
-        label:this.nom,
-        value: this.code
+  watch:{
+    item(new_val){
+      if(!!new_val){
+        this.nom = new_val.nom
+        this.code = new_val.code
       }
-      this.$store.state.buttons.push(data)
+    }
+  },
+  methods:{
+    close(){
+      this.$emit("close");
+    },
+    changeConfig(){
+      if(!!this.item){
+        this.item.nom = this.nom
+        this.item.code = this.code 
+      } else {
+        let data = {
+          label:this.nom,
+          value: this.code
+        }
+        this.$store.state.buttons.push(data)
+      }
       this.$emit('close')
     }
   }

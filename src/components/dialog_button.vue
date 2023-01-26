@@ -2,7 +2,7 @@
   <div class="parent" @click.stop>
     <div class="content">
       <div class="title">
-        <button class="close" @click="$emit('close')">
+        <button class="close" @click="close">
           &times
         </button>
         <h2>Créer une commande</h2>
@@ -41,8 +41,11 @@ export default {
   watch:{
     item(new_val){
       if(!!new_val){
-        this.nom = new_val.nom
-        this.code = new_val.code
+        this.nom = new_val.label
+        this.code = new_val.value
+      } else {
+        this.nom = ""
+        this.code = ""
       }
     }
   },
@@ -52,8 +55,8 @@ export default {
     },
     changeConfig(){
       if(!!this.item){
-        this.item.nom = this.nom
-        this.item.code = this.code 
+        this.item.nom = this.label
+        this.item.code = this.value 
       } else {
         let data = {
           label:this.nom,
@@ -61,7 +64,7 @@ export default {
         }
         this.$store.state.buttons.push(data)
       }
-      this.$emit('close')
+      this.close()
     }
   }
 };

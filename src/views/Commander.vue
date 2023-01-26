@@ -1,6 +1,6 @@
 <template>
   <div id="app">
-    <TopBar/>
+    <TopBar @create="button_shown=true"/>
     <div class="body">
       <div class="camera">
         <div class="top">
@@ -38,6 +38,8 @@
           :value="button.value"/>
       </div>
     </div>
+    <DialogButton
+      v-if="button_shown"/>
   </div>
 </template>
 
@@ -45,10 +47,11 @@
 import TopBar from '@/components/topbar.vue'
 import Button from '@/components/button.vue'
 import Robot from '@/components/robot.vue'
+import DialogButton from '@/components/dialog_button.vue'
 
 export default {
   components: {
-    TopBar, Button, Robot
+    TopBar, Button, Robot, DialogButton
   },
   data(){
     return {
@@ -64,6 +67,7 @@ export default {
       ],
       buttons:this.$store.state.buttons,
       msg:"",
+      button_shown: false
     }
   },
   watch:{

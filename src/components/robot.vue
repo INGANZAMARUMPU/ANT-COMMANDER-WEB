@@ -25,7 +25,7 @@ export default {
 </script>
 <style scoped>
 .border{
-  border: 1px solid white;
+  border: 1px solid var(--primary);
 }
 .robot{
   background-color: var(--primary);

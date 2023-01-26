@@ -5,7 +5,7 @@
     <div class="options">
       <h1
         v-if="$store.state.mode=='commander'"
-        @click="createCommand">
+        @click="$emit('create')">
         +
       </h1>
       <h1 class="close"
@@ -20,11 +20,6 @@
 
 <script>
 export default {
-  methods:{
-    createCommand(){
-      this.$emit("create")
-    }
-  }
 }
 </script>
 <style scoped>

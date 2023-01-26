@@ -1,10 +1,10 @@
 <template>
   <div id="app">
-    <TopBar @close="close"/>
+    <TopBar/>
     <div class="body">
       <div class="camera">
         <div class="top">
-          <div class="title">{{ selected.name }}</div>
+          <div class="title">{{ selected.name||'*select a robot*' }}</div>
           <div v-if="!!msg">
             <div>new command: <strong>{{ msg }}</strong></div>
           </div>
@@ -12,8 +12,10 @@
         <div class="robots">
           <Robot
             class="robot" v-for="ant in robots"
-            :name="ant.name"
-            :id="ant.id"/>
+            :name="ant.name" :id="ant.id"
+            :selected="selected.id==ant.id"
+            @selected="selected=ant"
+            :key="ant.id"/>
         </div>
       </div>
       <div class="buttons">
@@ -34,10 +36,7 @@ export default {
   },
   data(){
     return {
-      selected:{
-        name: "Main Ant",
-        id:16153153
-      },
+      selected:{},
       robots:[
         {id:16153153,name:"Ant no. 53"},
         {id:16153154,name:"Ant no. 54"},
@@ -46,7 +45,8 @@ export default {
         {id:16153157,name:"Ant no. 57"},
         {id:16153158,name:"Ant no. 58"},
         {id:16153159,name:"Ant no. 59"},
-      ]
+      ],
+      msg:"",
     }
   },
   methods:{

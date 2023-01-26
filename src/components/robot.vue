@@ -1,5 +1,7 @@
 <template>
-  <div class="robot" @click="changeRobot">
+  <div class="robot"
+    :class="{'selected':selected}"
+    @click="selected?'':$emit('selected')">
     <label>{{ name }}</label>
     <div class="value">{{ id }}</div>
   </div>
@@ -9,23 +11,14 @@
 export default {
   props:{
     name:{type:String, required:true},
-    id:{type:String, required:true},
+    id:{type:Number, required:true},
+    selected:{type:Boolean, default:false},
   },
   data(){
     return {
       audios:[]
     }
   },
-  methods:{
-    play(){
-      let data = {
-        "sender" : this.$store.state.id,
-        "order" : "dtmf",
-        "message" : this.id
-      }
-      this.$store.state.socket.send(JSON.stringify(data))
-    }
-  }
 }
 </script>
 <style scoped>
@@ -37,9 +30,11 @@ export default {
 }
 .robot label{
   font-weight: 800;
-  font-size: 1.1em;
 }
 .value{
   font-size: 0.8em!important;
+}
+.selected{
+  opacity: .7;
 }
 </style>

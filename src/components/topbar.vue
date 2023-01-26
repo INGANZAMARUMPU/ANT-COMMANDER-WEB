@@ -1,11 +1,21 @@
 <template>
+<div>
   <div class="component">
     <h1 class="title"></h1>
     <div class="options">
-      <h1 @click="createCommand">+</h1>
-      <h1>☼</h1>
+      <h1
+        v-if="$store.state.mode=='commander'"
+        @click="createCommand">
+        +
+      </h1>
+      <h1 class="close"
+        @click="$store.state.mode=null">
+        &times
+      </h1>
     </div>
   </div>
+  <div class="shadow"></div>
+</div>
 </template>
 
 <script>
@@ -20,11 +30,17 @@ export default {
 <style scoped>
 .component{
   height: 60px;
-  box-shadow: 0 0 5px;
   padding: 0 0 0 20px;
   display: flex;
   justify-content: space-between;
   align-items: center;
+}
+.shadow{
+  background: rgb(0,0,0);
+  background: linear-gradient(180deg, rgba(100,100,100,1) 0%, rgba(120,120,120,1) 10%, rgba(255,255,255,.3) 100%);
+  height: 5px;
+  width: 100%;
+  position: absolute;
 }
 .options{
   display: flex;
@@ -42,6 +58,19 @@ export default {
 }
 .options > *:active{
   background-color: var(--primary-light);
+  color: white;
+  cursor: default;
+}
+.close{
+  color: red;
+}
+.close:hover{
+  background-color: red;
+  color: white;
+  cursor: default;
+}
+.close:active{
+  background-color: darkred;
   color: white;
   cursor: default;
 }

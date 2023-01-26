@@ -25,7 +25,7 @@
         <div class="field">
           <label>Mot de passe:</label>
           <input type="password"
-            placeholder="mot de passe de configuration" 
+            placeholder="clé de configuration" 
             v-model="password">
         </div>
         <div class="buttons">
@@ -61,6 +61,7 @@ export default {
 <style scoped>
 h2{
   margin-bottom: 10px;
+  text-align: center;
 }
 .parent{
   position: fixed;
@@ -81,7 +82,7 @@ h2{
   max-width: 350px;
 }
 .field{
-  margin-bottom: 10px;
+  margin-bottom: 15px;
 }
 .buttons{
   display: flex;
@@ -90,12 +91,14 @@ h2{
 .inline{
   display: flex;
   gap: 10px;
-  padding-top: 10px;
+  padding-top: 5px;
 }
 .inline>div{
   display: flex;
-  gap: 5px;
   align-items: baseline;
+}
+.inline label{
+  padding-left: 5px;
 }
 .field>label{
   font-weight: bold;

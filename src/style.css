@@ -17,12 +17,16 @@ body{
 #app{
     height: 100vh;
     min-width: 100%;
+    display: flex;
+    flex-direction: column;
+}
+#app>.body{
+    flex: 1;
 }
 input, button, .button{
-    font-size: 1.1em;
+    font-size: 1.05em;
 }
 input:not(input[type=radio]){
-    margin: 5px 0;
     padding: 3px 10px;
     height: 40px;
 }

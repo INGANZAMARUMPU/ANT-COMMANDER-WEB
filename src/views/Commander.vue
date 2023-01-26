@@ -1,6 +1,6 @@
 <template>
   <div id="app">
-    <TopBar @create="createCommand" @close="close"/>
+    <TopBar @close="close"/>
     <div class="body">
     </div>
   </div>
@@ -11,7 +11,6 @@ import TopBar from '@/components/topbar.vue'
 import Button from '@/components/button.vue'
 
 export default {
-  name: 'HomeView',
   components: {
     TopBar, Button
   },
@@ -20,9 +19,6 @@ export default {
     }
   },
   methods:{
-    close(){
-      this.$refs.dialog.showModal()
-    },
   }
 }
 </script>

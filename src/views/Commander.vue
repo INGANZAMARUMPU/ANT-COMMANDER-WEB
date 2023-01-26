@@ -2,9 +2,10 @@
   <div id="app">
     <TopBar @create="button_shown=true"/>
     <div class="body">
+      <img src="/static/ant.webp">
       <div class="camera">
         <div class="top">
-          <div class="title">{{ selected.name||'*select a robot*' }}</div>
+          <div class="title">{{ selected.name||'*hitamwo irobot*' }}</div>
           <div v-if="!!msg">
             <div>new command: <strong>{{ msg }}</strong></div>
           </div>
@@ -107,6 +108,10 @@ export default {
 <style scoped>
 .body{
   display: flex;
+  position: relative;
+  height: 100%;
+  width: 100%;
+  overflow: hidden;
 }
 .camera{
   background-color: black;
@@ -137,5 +142,13 @@ export default {
   display: flex;
   align-items: center;
   flex-direction: column;
+}
+img{
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  z-index: -1;
+  opacity: .2;
+  transform: rotate(-20deg);
 }
 </style>

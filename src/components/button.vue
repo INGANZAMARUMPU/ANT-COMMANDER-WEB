@@ -1,5 +1,5 @@
 <template>
-<div class="base button" @contextmenu.native.prevent="showContext">
+<div class="base button" @contextmenu.prevent.stop="showContext">
   <div @click="play">
     <label :class="{'big':item.frozen}">
       {{ item.label }}
@@ -8,8 +8,10 @@
   </div>
   <div class="context" ref="context"
     :class="{'invisible':context_hidden}">
-    <div @click="">Modifier</div>
-    <div class="">Supprimer</div>
+    <div @click="$emit('edit')">Modifier</div>
+    <div @click="$emit('delete')" v-if="!item.frozen">
+      Supprimer
+    </div>
   </div>
 </div>
 </template>
@@ -76,7 +78,7 @@ export default {
   padding: 2px 5px;
 }
 .context>*:hover{
-  background-color: var(--primary-light);
+  background-color: #3AC;
   color: white;
 }
 .invisible{

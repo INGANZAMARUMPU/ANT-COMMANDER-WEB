@@ -22,23 +22,30 @@
         <div class="control">
           <div class="line">
             <Button 
+              @edit="editButton(buttons[0])"
               :item="buttons[0]"/>
           </div>
           <div class="line">
             <Button 
+              @edit="editButton(buttons[1])"
               :item="buttons[1]"/>
             <Button 
+              @edit="editButton(buttons[2])"
               :item="buttons[2]"/>
             <Button 
+              @edit="editButton(buttons[3])"
               :item="buttons[3]"/>
           </div>
           <div class="line">
             <Button 
+              @edit="editButton(buttons[4])"
               :item="buttons[4]"/>
           </div>
         </div>
         <Button
-          v-for="button in buttons.slice(5)"
+          v-for="button, index in buttons.slice(5)"
+          @edit="editButton(button)"
+          @delete="deleteButton(index+5)"
           :item="button"/>
       </div>
     </div>
@@ -81,6 +88,12 @@ export default {
     }
   },
   methods:{
+    editButton(button){
+      console.log(button)
+    },
+    deleteButton(index){
+      this.$store.state.buttons.splice(index, 1)
+    }
   }
 }
 </script>

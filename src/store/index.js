@@ -6,6 +6,7 @@ export default createStore({
     socket:null,
     id:null,
     mode: "",
+    robot_name:"",
     buttons:[
       { label:"↑", value: "000", frozen:true},
       { label:"←", value: "002", frozen:true},

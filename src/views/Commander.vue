@@ -136,6 +136,7 @@ export default {
 }
 .buttons{
   flex-grow: 1;
+  max-width: 49%;
 }
 .control{
   width: 100%;

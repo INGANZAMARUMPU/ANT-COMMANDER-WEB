@@ -53,6 +53,7 @@ export default {
   },
   methods:{
     changeConfig(){
+      this.$store.state.robot_name = this.nom
       this.$emit("changed", this.mode)
     }
   }

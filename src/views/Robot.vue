@@ -55,6 +55,7 @@ export default {
             console.log(`[close] Connection closed cleanly, code=${event.code} reason=${event.reason}`);
           } else {
             console.log('[close] Connection died');
+            console.log(`[close] ${JSON.stringify(event)}`);
           }
         };
         this.socket.onerror = function(error) {

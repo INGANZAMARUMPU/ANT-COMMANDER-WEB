@@ -88,7 +88,7 @@ export default {
   watch:{
     "$store.state.buttons"(new_val){
       this.buttons = new_val
-    }
+    },
   },
   methods:{
     editButton(button){
@@ -102,6 +102,32 @@ export default {
       this.button_shown=false
       this.current_button={}
     }
+  },
+  mounted(){
+    this.socket = new WebSocket("ws://127.0.0.1:8000/robot/");
+    let vue = this
+    this.socket.onopen = function(e) {
+      console.log("[open] Connection established");
+      vue.socket.send(JSON.stringify({
+        order : "new_commander",
+      }));
+    };
+
+    this.socket.onmessage = function(event) {
+      console.log(`[message] Data received from server: ${event.data}`);
+    };
+
+    this.socket.onclose = function(event) {
+      if (event.wasClean) {
+        console.log(`[close] Connection closed cleanly, code=${event.code} reason=${event.reason}`);
+      } else {
+        console.log('[close] Connection died');
+        console.log(`[close] ${JSON.stringify(event)}`);
+      }
+    };
+    this.socket.onerror = function(error) {
+      console.log(`[error] ${JSON.stringify(error)}`);
+    };
   }
 }
 </script>

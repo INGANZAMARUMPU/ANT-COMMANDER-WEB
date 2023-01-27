@@ -7,6 +7,7 @@ export default createStore({
     id:null,
     mode: "",
     robot_name:"",
+    robot_id:"",
     buttons:[
       { label:"↑", value: "000", frozen:true},
       { label:"←", value: "002", frozen:true},

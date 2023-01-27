@@ -26,7 +26,41 @@ export default {
   },
   data(){
     return {
-      msg:""
+      msg:"",
+      socket: null
+    }
+  },
+  watch:{
+    "$store.state.robot_name"(new_val){
+      if(!!new_val){
+        this.socket = new WebSocket("ws://127.0.0.1:8000/robot/");
+        let vue = this
+        this.socket.onopen = function(e) {
+          console.log("[open] Connection established");
+          vue.socket.send(JSON.stringify({
+            order : "new_robot",
+            message : {
+              id: vue.$store.state.robot_name,
+              name: vue.$store.state.robot_id
+            }
+          }));
+        };
+
+        this.socket.onmessage = function(event) {
+          console.log(`[message] Data received from server: ${event.data}`);
+        };
+
+        this.socket.onclose = function(event) {
+          if (event.wasClean) {
+            console.log(`[close] Connection closed cleanly, code=${event.code} reason=${event.reason}`);
+          } else {
+            console.log('[close] Connection died');
+          }
+        };
+        this.socket.onerror = function(error) {
+          console.log(`[error] ${JSON.stringify(error)}`);
+        };
+      }
     }
   }
 }

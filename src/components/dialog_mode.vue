@@ -54,6 +54,7 @@ export default {
   methods:{
     changeConfig(){
       this.$store.state.robot_name = this.nom
+      this.$store.state.robot_id = new Date().getTime()
       this.$emit("changed", this.mode)
     }
   }

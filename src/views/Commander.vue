@@ -104,9 +104,14 @@ export default {
 
     this.socket.onmessage = function(event) {
       let data = JSON.parse(event.data)
-      if(data.order == "new_robot"){
+      if(data.order == "your_id"){
+        vue.socket.send(JSON.stringify({
+          order : "new_commander",
+          message : data.message
+        }));
+      } else if(data.order == "new_robot"){
         vue.robots.push(data.message)
-      }
+      } 
     };
 
     this.socket.onclose = function(event) {

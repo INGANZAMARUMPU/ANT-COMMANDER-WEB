@@ -13,7 +13,7 @@
 export default {
   props:{
     name:{type:String, required:true},
-    id:{type:Number, required:true},
+    id:{type:String, required:true},
     selected:{type:Boolean, default:false},
   },
   data(){

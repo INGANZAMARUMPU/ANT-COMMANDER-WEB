@@ -101,17 +101,23 @@ export default {
     this.socket.onopen = function(e) {
       console.log("[open] Connection established");
     };
-
     this.socket.onmessage = function(event) {
       let data = JSON.parse(event.data)
-      if(data.order == "your_id"){
-        vue.socket.send(JSON.stringify({
-          order : "new_commander",
-          message : data.message
-        }));
-      } else if(data.order == "new_robot"){
-        vue.robots.push(data.message)
-      } 
+      switch(data.order){
+        case "your_id":
+          vue.socket.send(JSON.stringify({
+            order : "new_commander",
+            message : data.message
+          }));
+          break
+        case "new_robot":
+          vue.robots.push(data.message)
+          break
+        case "robot_lost":
+          let lost = vue.robots.find(x => x.id == data.message)
+          lost.lost = true
+          break
+      }
     };
 
     this.socket.onclose = function(event) {

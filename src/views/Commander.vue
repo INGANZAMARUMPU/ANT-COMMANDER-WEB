@@ -12,10 +12,9 @@
         </div>
         <div class="robots">
           <Robot
-            v-for="ant in robots"
-            :name="ant.name" :id="ant.id"
+            v-for="ant in robots" :robot="ant"
             :selected="selected.id==ant.id"
-            @selected="selected=ant"
+            @selected="switchTo(ant)"
             :key="ant.id"/>
         </div>
       </div>
@@ -109,6 +108,13 @@ export default {
         "message" : value
       }
       this.socket.send(JSON.stringify(data))
+    },
+    switchTo(robot){
+      if(robot.lost){
+        this.robots = this.robots.filter(x => x.id != robot.id)
+      } else {
+        this.selected = robot
+      }
     }
   },
   mounted(){
@@ -128,6 +134,11 @@ export default {
           break
         case "new_robot":
           vue.robots.push(data.message)
+          break
+        case "robot_lost":
+          let robot_id = data.message
+          let robot = vue.robots.find(x => x.id == robot_id)
+          robot.lost = true
           break
       }
     };

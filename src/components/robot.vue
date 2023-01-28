@@ -1,10 +1,10 @@
 <template>
-<div class="border">
+<div class="border" :class="{'lost':robot.lost}">
   <div class="robot"
     :class="{'selected':selected}"
-    @click="selected?'':$emit('selected')">
-    <label>{{ name }}</label>
-    <div class="value">{{ id }}</div>
+    @click="$emit('selected')">
+    <label>{{ robot.name }}</label>
+    <div class="value">{{ robot.id }}</div>
   </div>
 </div>
 </template>
@@ -12,8 +12,7 @@
 <script>
 export default {
   props:{
-    name:{type:String, required:true},
-    id:{type:String, required:true},
+    robot:{type:Object, required:true},
     selected:{type:Boolean, default:false},
   },
   data(){
@@ -39,7 +38,16 @@ export default {
 .value{
   font-size: 0.8em!important;
 }
-.robot:hover,.selected{
+.robot:hover, .selected{
   opacity: .7;
+}
+.border.lost{
+  border: 1px solid red;
+}
+.lost .robot{
+  background-color: red;
+}
+.lost .robot:hover,.lost .robot .selected{
+  opacity: .4;
 }
 </style>

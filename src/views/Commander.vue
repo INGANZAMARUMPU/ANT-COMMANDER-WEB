@@ -109,7 +109,7 @@ export default {
     this.socket.onopen = function(e) {
       console.log("[open] Connection established");
       vue.socket.send(JSON.stringify({
-        order : "new_commander",
+        order : "new_commander"
       }));
     };
 

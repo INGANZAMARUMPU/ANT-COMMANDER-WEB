@@ -37,17 +37,21 @@ export default {
         let vue = this
         this.socket.onopen = function(e) {
           console.log("[open] Connection established");
-          vue.socket.send(JSON.stringify({
-            order : "new_robot",
-            message : {
-              id: vue.$store.state.robot_name,
-              name: vue.$store.state.robot_id
-            }
-          }));
         };
 
         this.socket.onmessage = function(event) {
-          console.log(`[message] Data received from server: ${event.data}`);
+          let data = JSON.parse(event.data)
+          if(data.order == "your_id"){
+            console.log(data)
+            vue.$store.state.robot_id = data.message
+            vue.socket.send(JSON.stringify({
+              order : "new_robot",
+              message : {
+                id: data.message,
+                name: vue.$store.state.robot_name
+              }
+            }));
+          }
         };
 
         this.socket.onclose = function(event) {

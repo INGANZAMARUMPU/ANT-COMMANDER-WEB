@@ -70,15 +70,7 @@ export default {
   data(){
     return {
       selected:{},
-      robots:[
-        {id:16153153,name:"Ant no. 53"},
-        {id:16153154,name:"Ant no. 54"},
-        {id:16153155,name:"Ant no. 55"},
-        {id:16153156,name:"Ant no. 56"},
-        {id:16153157,name:"Ant no. 57"},
-        {id:16153158,name:"Ant no. 58"},
-        {id:16153159,name:"Ant no. 59"},
-      ],
+      robots:[],
       buttons:this.$store.state.buttons,
       msg:"",
       button_shown: false,
@@ -104,17 +96,17 @@ export default {
     }
   },
   mounted(){
-    this.socket = new WebSocket("ws://127.0.0.1:8000/robot/");
+    this.socket = new WebSocket("ws://127.0.0.1:8000/commander/");
     let vue = this
     this.socket.onopen = function(e) {
       console.log("[open] Connection established");
-      vue.socket.send(JSON.stringify({
-        order : "new_commander"
-      }));
     };
 
     this.socket.onmessage = function(event) {
-      console.log(`[message] Data received from server: ${event.data}`);
+      let data = JSON.parse(event.data)
+      if(data.order == "new_robot"){
+        vue.robots.push(data.message)
+      }
     };
 
     this.socket.onclose = function(event) {

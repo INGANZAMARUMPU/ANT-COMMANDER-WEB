@@ -42,7 +42,6 @@ export default {
         this.socket.onmessage = function(event) {
           let data = JSON.parse(event.data)
           if(data.order == "your_id"){
-            console.log(data)
             vue.$store.state.robot_id = data.message
             vue.socket.send(JSON.stringify({
               order : "new_robot",

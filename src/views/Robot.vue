@@ -64,9 +64,11 @@ export default {
               }));
               vue.robots.push(data.message)
               break
+            case "dmtf":
+              vue.play(data.message)
+              break
           }
         };
-
         this.socket.onclose = function(event) {
           if (event.wasClean) {
             console.log(`[close] Connection closed cleanly, code=${event.code} reason=${event.reason}`);
@@ -79,6 +81,17 @@ export default {
           console.log(`[error] ${JSON.stringify(error)}`);
         };
       }
+    },
+    methods:{
+      play(str_dtmf){
+        let track
+        for(var i = 0; i < dtmf.length; i++){
+          track = "/static/"+dtmf[i]+".mp3"
+          setTimeout(() => {
+            new Audio(track).play()
+          }, i*200)
+        }
+      },
     }
   }
 }

@@ -23,22 +23,27 @@
         <div class="control">
           <div class="line">
             <Button 
+              @dtmf="sendDtmf"
               @edit="editButton(buttons[0])"
               :item="buttons[0]"/>
           </div>
           <div class="line">
             <Button 
+              @dtmf="sendDtmf"
               @edit="editButton(buttons[1])"
               :item="buttons[1]"/>
             <Button 
+              @dtmf="sendDtmf"
               @edit="editButton(buttons[2])"
               :item="buttons[2]"/>
             <Button 
+              @dtmf="sendDtmf"
               @edit="editButton(buttons[3])"
               :item="buttons[3]"/>
           </div>
           <div class="line">
             <Button 
+              @dtmf="sendDtmf"
               @edit="editButton(buttons[4])"
               :item="buttons[4]"/>
           </div>
@@ -93,6 +98,17 @@ export default {
     closeDialogs(){
       this.button_shown=false
       this.current_button={}
+    },
+    sendDtmf(value){
+      if(!this.selected.id){
+        alert("banza uhitemwo robot")
+      }
+      let data = {
+        "dest" : this.selected.id,
+        "order" : "dtmf",
+        "message" : value
+      }
+      this.socket.send(JSON.stringify(data))
     }
   },
   mounted(){
@@ -113,13 +129,8 @@ export default {
         case "new_robot":
           vue.robots.push(data.message)
           break
-        case "robot_lost":
-          let lost = vue.robots.find(x => x.id == data.message)
-          lost.lost = true
-          break
       }
     };
-
     this.socket.onclose = function(event) {
       if (event.wasClean) {
         console.log(`[close] Connection closed cleanly, code=${event.code} reason=${event.reason}`);

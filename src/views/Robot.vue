@@ -62,10 +62,9 @@ export default {
                   name: vue.$store.state.robot_name
                 }
               }));
-              vue.robots.push(data.message)
               break
-            case "dmtf":
-              vue.play(data.message)
+            case "dtmf":
+              vue.playDtmf(data.message)
               break
           }
         };
@@ -81,18 +80,19 @@ export default {
           console.log(`[error] ${JSON.stringify(error)}`);
         };
       }
-    },
-    methods:{
-      play(str_dtmf){
-        let track
-        for(var i = 0; i < dtmf.length; i++){
-          track = "/static/"+dtmf[i]+".mp3"
-          setTimeout(() => {
-            new Audio(track).play()
-          }, i*200)
-        }
-      },
     }
+  },
+  methods:{
+    playDtmf(str_dtmf){
+      this.msg = str_dtmf
+      let track
+      for(var i = 0; i < str_dtmf.length; i++){
+        track = "/static/"+str_dtmf[i]+".mp3"
+        setTimeout(() => {
+          new Audio(track).play()
+        }, i*200)
+      }
+    },
   }
 }
 </script>

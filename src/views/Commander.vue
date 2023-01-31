@@ -118,7 +118,15 @@ export default {
     }
   },
   mounted(){
-    this.socket = new WebSocket("ws://127.0.0.1:8000/commander/");
+    let url = new URL(window.location)
+    let local_origins = ["localhost", "127.0.0.1"]
+    if(local_origins.includes(window.location.hostname) && url.protocol == "http"){
+      url.port = 8000
+    }
+    url.protocol = url.protocol == "http:" ? "ws:" : "wss:"
+    
+    this.socket = new WebSocket(`${url.origin}/commander/`);
+
     let vue = this
     this.socket.onopen = function(e) {
       console.log("[open] Connection established");

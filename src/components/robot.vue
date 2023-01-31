@@ -26,6 +26,9 @@ export default {
 .border{
   border: 1px solid var(--primary);
 }
+.border:not(.lost):has(.selected){
+  box-shadow: 0 0 10px 1px var(--primary);
+}
 .robot{
   background-color: var(--primary);
   padding: 5px;
@@ -42,7 +45,7 @@ export default {
   opacity: .7;
 }
 .border.lost{
-  border: 1px solid red;
+  border: 1px solid darkred;
 }
 .lost .robot{
   background-color: red;

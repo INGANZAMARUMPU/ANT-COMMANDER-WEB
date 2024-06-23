@@ -1,15 +1,13 @@
 <template>
-  <CommanderPage v-if="$store.state.mode=='commander'"/>
-  <RobotPage v-else/>
-  <DialogMode v-if="!$store.state.mode"/>
+  <Home/>
+  <DialogMode v-if="!$store.state.user"/>
 </template>
 <script>
 import DialogMode from "@/components/dialog_mode"
-import CommanderPage from "@/views/Commander"
-import RobotPage from "@/views/Robot"
+import Home from "@/views/Home"
 export default {
   components:{
-    DialogMode, CommanderPage, RobotPage
+    DialogMode, Home
   }
 }
 </script>

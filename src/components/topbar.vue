@@ -9,7 +9,7 @@
         +
       </h1>
       <h1 class="close"
-        @click="$store.state.mode=null">
+        @click="logout">
         &times
       </h1>
     </div>
@@ -20,6 +20,13 @@
 
 <script>
 export default {
+  methods:{
+    logout(){
+      if(window.confirm("Voulez-vous vraiment voudeconnecter?")){
+        this.$store.state.user = null
+      }
+    }
+  }
 }
 </script>
 <style scoped>

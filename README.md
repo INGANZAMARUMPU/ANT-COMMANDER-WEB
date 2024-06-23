@@ -1,4 +1,4 @@
-# ant_commander_web
+# hackaton_web
 
 ## Project setup
 ```

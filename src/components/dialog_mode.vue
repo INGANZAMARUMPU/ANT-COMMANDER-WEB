@@ -1,26 +1,13 @@
 <template>
   <div class="parent" @click.stop>
     <div class="content">
-      <h2>Choose mode</h2>
+      <h2>Connexion</h2>
       <div>
         <div class="field">
-          <label>Choisissez le mode:</label>
-          <div class="inline">
-            <div>
-              <input type="radio" value="commander" name="mode" id="commander" v-model="mode">
-              <label for="commander">Commander</label>
-            </div>
-            <div>
-              <input type="radio" value="robot" name="mode" id="robot" v-model="mode">
-              <label for="robot">Robot</label>
-            </div>
-          </div>
-        </div>
-        <div class="field" v-if="mode=='robot'">
-          <label>Nom du Robot:</label>
+          <label>Nom d'utilisateur:</label>
           <input type="text"
             placeholder="Nom a affecter au robot" 
-            v-model="nom">
+            v-model="username">
         </div>
         <div class="field">
           <label>Mot de passe:</label>
@@ -29,8 +16,8 @@
             v-model="password">
         </div>
         <div class="buttons">
-          <button @click="changeConfig">
-            Choisir
+          <button @click="login">
+            Se connecter
           </button>
         </div>
       </div>
@@ -39,22 +26,25 @@
 </template>
 <script>
 export default {
-  methods:{
-    close(){
-      this.$emit("close");
-    }
-  },
+  methods:{},
   data(){
     return {
-      mode:"commander",
-      nom:"",
+      username:"",
       password:""
     }
   },
   methods:{
-    changeConfig(){
-      this.$store.state.robot_name = this.nom
-      this.$store.state.mode = this.mode
+    login(){
+      let data = {
+        username:this.username,
+        password:this.password
+      }
+      axios.post(this.url+"/login/", data)
+      .then((response) => {
+        this.$store.state.user = response.data
+      }).catch((error) => {
+        console.error(error)
+      })
     }
   }
 };
